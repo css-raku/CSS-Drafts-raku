@@ -6,22 +6,26 @@ use CSS::Grammar::Test;
 use CSS::Drafts::CSS3;
 use CSS::Writer;
 
-my $actions = CSS::Drafts::CSS3::Actions.new;
+my $actions = CSS::Drafts::CSS3::Actions;
 my $writer = CSS::Writer.new;
 
-for 't/css3x-values-and-units.json'.IO.lines {
+my $tests = @*ARGS.head // 't/css3x-values-and-units.json';
+
+for $tests.IO.lines {
 
     next
         if .substr(0,2) eq '//';
 
-    my ($rule, $expected) = @( from-json($_) );
+    my :($rule, $expected) := from-json($_);
     my $input = $expected<input>;
-
-    &CSS::Grammar::Test::parse-tests(
-        CSS::Drafts::CSS3, $input, :$rule, :$actions,
-        :suite<css3x-units>,
-        :$writer,
-        :$expected );
+    subtest $input, {
+        $actions .= new;
+        &CSS::Grammar::Test::parse-tests(
+            CSS::Drafts::CSS3, $input, :$rule, :$actions,
+            :suite<css3x-units>,
+            :$writer,
+            :$expected );
+    }
 }
 
 done-testing;

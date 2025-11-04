@@ -5,11 +5,11 @@ use v6;
 #
 use CSS::Grammar::CSS3;
 use CSS::Grammar::Actions;
-use CSS::Specification::Terms;
-use CSS::Specification::Terms::Actions;
+use CSS::Specification::Defs;
+use CSS::Specification::Defs::Actions;
 
 grammar CSS::Module::CSS3::Values_and_Units
-    is CSS::Specification::Terms
+    is CSS::Specification::Defs
     is CSS::Grammar::CSS3 {
 
     # -- Units -- #
@@ -43,7 +43,7 @@ grammar CSS::Module::CSS3::Values_and_Units
     rule resolution:sym<math> {<math>}
 
     # implement proforma rules for attr() and toggle()
-    # - see <val> rule in CSS::Specification::Terms.
+    # - see <val> rule in CSS::Specification::Defs.
     rule toggle-arg { <val($*EXPR, $*USAGE)> }
     rule toggle     {:i 'toggle(' <expr=.toggle-arg> +% ',' ')' }
     rule attr       {:i 'attr(' <qname> [[<.type>|<.unit-name>] && <keyw>]? [ <op(',')> <val($*EXPR, $*USAGE)> ]? ')' }
@@ -51,10 +51,10 @@ grammar CSS::Module::CSS3::Values_and_Units
     rule proforma:sym<attr>   { <attr> }
 };
 
-use CSS::Grammar::AST :CSSValue;
+use CSS::Grammar::Defs :CSSValue;
 
 class CSS::Module::CSS3::Values_and_Units::Actions
-    is CSS::Specification::Terms::Actions
+    is CSS::Specification::Defs::Actions
     is CSS::Grammar::Actions {
 
     role Cast {
@@ -70,11 +70,12 @@ class CSS::Module::CSS3::Values_and_Units::Actions
             unless $node.value.can('cast');
 
         # map units to base type. E.g. ms => time
-        if my $units-type = CSS::Grammar::AST::CSSUnits.enums{$cast} {
-            $cast = $units-type;
+        with $cast {
+            with CSS::Grammar::Defs::CSSUnits.enums{$_} -> $units-type {
+                $cast = $units-type;
+            }
+            $node.value.cast = $cast;
         }
-
-        $node.value.cast = $cast if $cast.defined;
 
         return $node;
     }
@@ -85,8 +86,8 @@ class CSS::Module::CSS3::Values_and_Units::Actions
     method resolution-units($/)           { make $/.lc }
 
     method math($/) {
-        make $.cast( $.func( 'calc', $<sum>.ast, :arg-type<expr>),
-                      :cast( $<sum>.ast.value.cast ) );
+        my $cast = $<sum>.ast.value.cast;
+        make $.cast: $.build.func( 'calc', $<sum>.ast, :arg-type<expr>), :$cast;
     }
 
     method !coerce-types($lhs, $rhs) {
@@ -166,37 +167,35 @@ class CSS::Module::CSS3::Values_and_Units::Actions
         make $.cast( $expr, :type<expr>, :$cast );
     }
 
-    method toggle-arg($/) {
-        my $decl = $.decl( $/ );
-        make $decl<expr>;
+    method toggle-arg(::?CLASS:D $obj: $/) {
+        make .<expr> given $.build.decl( $/, :$obj );
     }
 
-    method toggle($/) { 
+    method toggle($/) {
         return Any if $<expr>>>.ast.grep: {! .defined};
         my @args = $.list( $/ ).map: {
             # rule may have consumed arguments, e.g. font-family
             .<expr>:exists && .<expr>.first({.<op> && .<op> eq ','})
-            ?? .<expr>.grep({!.<op> || .<op> ne ','}).map: { %( expr => [$_] ).item }
+            ?? .<expr>.grep({!.<op> || .<op> ne ','}).map(-> $expr {[:$expr]})
             !! $_;
         }
-
-        make $.func('toggle', @args);
+        make $.build.func('toggle', @args);
     }
 
-    method attr($/) {
-        my @ast = @( $.list($/) );
+    method attr(::?CLASS:D $obj: $/) {
+        my @ast = @( quietly $.list($/) );
         if $<val> {
-            @ast[*-1] = {'expr:fallback' => $.decl( $/ )<expr>};
+            @ast[*-1] = {'expr:fallback' => $.build.decl( $/, :$obj)<expr>};
         }
 
-        make $.func( 'attr', @ast, :arg-type<expr> );
+        make $.build.func( 'attr', @ast, :arg-type<expr> );
     }
 
     method proforma:sym<toggle>($/) { make $.node($/) }
     method proforma:sym<attr>($/)   { make $.node($/) }
 
     method attr-expr($/) {
-        make $.func( 'attr', $.list($/) );
+        make $.build.func( 'attr', $.list($/) );
     }
 
     method unit($/) {
@@ -211,7 +210,7 @@ class CSS::Module::CSS3::Values_and_Units::Actions
 
         my $expr-type = $expr-ast.value.cast;
         unless $expr-type.defined {
-            $.warning("incompatible types in expression", ~$/);
+            $.warning("incompatible types in expression", ~$expr);
             return Any;
         }
 

@@ -17,13 +17,17 @@ grammar CSS::Drafts::CSS3
     is CSS::Module::CSS3::Values_and_Units
     is CSS::Module::CSS3::Backgrounds_and_Borders
     is CSS::Module::CSS3 {
-
-    method module {
+    method module(|c) {
         use CSS::Drafts::CSS3::Metadata;
-        my %property-metadata = %$CSS::Drafts::CSS3::Metadata::property;
-        state $this //= CSS::Module.new( :grammar($?CLASS),
-					 :actions(CSS::Drafts::CSS3::Actions),
-					 :%property-metadata,
-	    );
+        my constant Metadata = CSS::Drafts::CSS3::Metadata;
+        CSS::Module.new(
+            :name<CSS3>,
+            :grammar($?CLASS),
+            :actions(CSS::Drafts::CSS3::Actions),
+            :property-metadata($Metadata::property),
+            :prop-names(Metadata::prop-names),
+            :index(&Metadata::index),
+            |c
+        );
     }
 }
