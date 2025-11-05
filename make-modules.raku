@@ -2,6 +2,7 @@ use v6;
 
 use experimental :rakuast;
 use CSS::Specification::Compiler :&build-metadata;
+use CSS::Module::CSS3::Metadata;
 use NativeCall;
 
 sub path(RakuAST::Package $p) {
@@ -13,7 +14,8 @@ class Build {
     method build($where) {
 
         indir $where, {
-            my %props;
+            # inherit and subclass CSS3 properties
+            my %props = $CSS::Module::CSS3::Metadata::property;
 
             for (<etc css3x-background-20120724.txt> => <CSS3 Backgrounds_and_Borders>,
                 ) {

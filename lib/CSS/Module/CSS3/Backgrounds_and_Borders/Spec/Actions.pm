@@ -1,46 +1,46 @@
 unit class CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions;
-method expr-border-image-outset ($/) {
+method val-border-image-outset ($/) {
     make $.build.list($/)
 }
-method expr-border-image-repeat ($/) {
+method val-border-image-repeat ($/) {
     make $.build.list($/)
 }
-method expr-border-image-slice ($/) {
+method val-border-image-slice ($/) {
+    make $.build.rule($/)
+}
+method val-border-image-source ($/) {
     make $.build.list($/)
 }
-method expr-border-image-source ($/) {
+method val-border-image-width ($/) {
     make $.build.list($/)
 }
-method expr-border-image-width ($/) {
+method val-border-style ($/) {
     make $.build.list($/)
 }
-method expr-border-style ($/) {
+method val-border-top-style ($/) {
     make $.build.list($/)
 }
-method expr-border-top-style ($/) {
+method val-border-right-style ($/) {
     make $.build.list($/)
 }
-method expr-border-right-style ($/) {
+method val-border-bottom-style ($/) {
     make $.build.list($/)
 }
-method expr-border-bottom-style ($/) {
+method val-border-left-style ($/) {
     make $.build.list($/)
 }
-method expr-border-left-style ($/) {
+method val-border-top-width ($/) {
     make $.build.list($/)
 }
-method expr-border-top-width ($/) {
+method val-border-right-width ($/) {
     make $.build.list($/)
 }
-method expr-border-right-width ($/) {
+method val-border-bottom-width ($/) {
     make $.build.list($/)
 }
-method expr-border-bottom-width ($/) {
+method val-border-left-width ($/) {
     make $.build.list($/)
 }
-method expr-border-left-width ($/) {
-    make $.build.list($/)
-}
-method expr-border-width ($/) {
+method val-border-width ($/) {
     make $.build.list($/)
 }

@@ -13,7 +13,8 @@ border-color	<color>{1,4}	(see individual properties)	all elements	no	N/A	visual
 border-image	<‘border-image-source’> || <‘border-image-slice’> [ / <‘border-image-width’> | / <‘border-image-width’>? / <‘border-image-outset’> ]? || <‘border-image-repeat’>	See individual properties	See individual properties	no	N/A	visual
 border-image-outset	[ <length> | <number> ]{1,4}	0	All elements, except internal table elements when ‘border-collapse’ is ‘collapse’	no	N/A	visual
 border-image-repeat	[ stretch | repeat | round | space ]{1,2}	stretch	All elements, except internal table elements when ‘border-collapse’ is ‘collapse’	no	N/A	visual
-border-image-slice	[<number> | <percentage>]{1,4} && fill?	100%	All elements, except internal table elements when ‘border-collapse’ is ‘collapse’	no	refer to size of the border image	visual
+border-image-slice	<val-border-image-slice>{1,4} && fill?	100%	All elements, except internal table elements when ‘border-collapse’ is ‘collapse’	no	refer to size of the border image	visual
+    <val-border-image-slice> := <number> | <percentage>
 border-image-source	none | <image>	none	All elements, except internal table elements when ‘border-collapse’ is ‘collapse’	no	N/A	visual
 border-image-width	[ <length> | <percentage> | <number> | auto ]{1,4}	1	All elements, except table elements when ‘border-collapse’ is ‘collapse’	no	Relative to width/height of the border image area	visual
 border-radius	[ <length> | <percentage> ]{1,4} [ / [ <length> | <percentage> ]{1,4} ]?	see individual properties	all elements (but see prose)	no	Refer to corresponding dimension of the border box.	visual
