@@ -1,31 +1,34 @@
 unit role CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface;
-method bg-layer ($/) {
+method angle (|) {
     ...
 }
-method box ($/) {
+method bg-layer (|) {
     ...
 }
-method color ($/) {
+method bg-position (|) {
     ...
 }
-method final-bg-layer ($/) {
+method color (|) {
     ...
 }
-method image ($/) {
+method frequency (|) {
     ...
 }
-method length ($/) {
+method length (|) {
     ...
 }
-method number ($/) {
+method number (|) {
     ...
 }
-method percentage ($/) {
+method percentage (|) {
     ...
 }
-method position ($/) {
+method position (|) {
     ...
 }
-method shadow ($/) {
+method time (|) {
+    ...
+}
+method url (|) {
     ...
 }

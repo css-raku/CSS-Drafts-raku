@@ -17,7 +17,7 @@ class Build {
             # inherit and subclass CSS3 properties
             my %props = $CSS::Module::CSS3::Metadata::property;
 
-            for (<etc css3x-background-20120724.txt> => <CSS3 Backgrounds_and_Borders>,
+            for (<etc css3x-backgrounds-3-20240311.txt> => <CSS3 Backgrounds_and_Borders>,
                 ) {
                 my ($input-spec, $class-isa) = .kv;
                 my @base-id = flat <CSS Module>, @$class-isa, <Spec>;
@@ -35,9 +35,9 @@ class Build {
                 my RakuAST::Package $actions-ast = $compiler.build-actions(@actions-id, :$scope);
                 "lib/{$actions-ast.&path}.pm".IO.spurt: $actions-ast.DEPARSE;
 
-                my @role-id = @base-id.Slip, 'Interface';
-                my RakuAST::Package $role-ast = $compiler.build-role(@role-id, :$scope);
-                "lib/{$role-ast.&path}.pm".IO.spurt: $role-ast.DEPARSE;
+                my @external-id = @base-id.Slip, 'Interface';
+                my RakuAST::Package $external-ast = $compiler.build-external(@external-id, :$scope);
+                "lib/{$external-ast.&path}.pm".IO.spurt: $external-ast.DEPARSE;
                 my %meta = @defs.&build-metadata(:%child-props);
                 %props ,= %meta;
                 

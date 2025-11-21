@@ -1,46 +1,106 @@
 unit class CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions;
-method val-border-image-outset ($/) {
-    make $.build.list($/)
-}
-method val-border-image-repeat ($/) {
-    make $.build.list($/)
-}
-method val-border-image-slice ($/) {
+method bg-image ($/) {
     make $.build.rule($/)
 }
-method val-border-image-source ($/) {
+method attachment ($/) {
+    make $.build.rule($/)
+}
+method bg-size ($/) {
+    make $.build.rule($/)
+}
+method line-style ($/) {
+    make $.build.rule($/)
+}
+method image ($/) {
+    make $.build.rule($/)
+}
+method line-width ($/) {
+    make $.build.rule($/)
+}
+method repeat-style ($/) {
+    make $.build.rule($/)
+}
+method visual-box ($/) {
+    make $.build.rule($/)
+}
+method layout-box ($/) {
+    make $.build.rule($/)
+}
+method paint-box ($/) {
+    make $.build.rule($/)
+}
+method coord-box ($/) {
+    make $.build.rule($/)
+}
+method gradient ($/) {
+    make $.build.rule($/)
+}
+method linear-gradient-syntax ($/) {
+    make $.build.rule($/)
+}
+method color-stop-list ($/) {
+    make $.build.rule($/)
+}
+method linear-color-stop ($/) {
+    make $.build.rule($/)
+}
+method linear-color-hint ($/) {
+    make $.build.rule($/)
+}
+method radial-gradient-syntax ($/) {
+    make $.build.rule($/)
+}
+method radial-size ($/) {
+    make $.build.rule($/)
+}
+method radial-extent ($/) {
+    make $.build.rule($/)
+}
+method radial-shape ($/) {
+    make $.build.rule($/)
+}
+method side-or-corner ($/) {
+    make $.build.rule($/)
+}
+method length-percentage ($/) {
+    make $.build.rule($/)
+}
+method frequency-percentage ($/) {
+    make $.build.rule($/)
+}
+method angle-percentage ($/) {
+    make $.build.rule($/)
+}
+method time-percentage ($/) {
+    make $.build.rule($/)
+}
+method prop-val-border-image-outset ($/) {
     make $.build.list($/)
 }
-method val-border-image-width ($/) {
+method prop-val-border-image-repeat ($/) {
     make $.build.list($/)
 }
-method val-border-style ($/) {
+method prop-val-border-image-slice ($/) {
     make $.build.list($/)
 }
-method val-border-top-style ($/) {
+method prop-val-border-image-source ($/) {
     make $.build.list($/)
 }
-method val-border-right-style ($/) {
+method prop-val-border-image-width ($/) {
     make $.build.list($/)
 }
-method val-border-bottom-style ($/) {
-    make $.build.list($/)
+method shadow ($/) {
+    make $.build.rule($/)
 }
-method val-border-left-style ($/) {
-    make $.build.list($/)
+method linear-gradient ($/) {
+    $.make-func("linear-gradient", $/)
 }
-method val-border-top-width ($/) {
-    make $.build.list($/)
+method radial-gradient ($/) {
+    $.make-func("radial-gradient", $/)
 }
-method val-border-right-width ($/) {
-    make $.build.list($/)
+method repeating-linear-gradient ($/) {
+    $.make-func("repeating-linear-gradient", $/)
 }
-method val-border-bottom-width ($/) {
-    make $.build.list($/)
-}
-method val-border-left-width ($/) {
-    make $.build.list($/)
-}
-method val-border-width ($/) {
-    make $.build.list($/)
+method repeating-radial-gradient ($/) {
+    $.make-func("repeating-radial-gradient", $/)
 }

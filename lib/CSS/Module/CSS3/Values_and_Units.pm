@@ -3,16 +3,20 @@ use v6;
 # This class implements CSS3 Values and Units Module Level 3
 # - reference: http://www.w3.org/TR/2013/CR-css3-values-20130404/
 #
-use CSS::Grammar::CSS3;
-use CSS::Grammar::Actions;
-use CSS::Specification::Defs;
-use CSS::Specification::Defs::Actions;
+grammar CSS::Module::CSS3::Values_and_Units {
+    use CSS::Grammar::CSS3;
+    use CSS::Specification::Base::Grammar;
 
-grammar CSS::Module::CSS3::Values_and_Units
-    is CSS::Specification::Defs
-    is CSS::Grammar::CSS3 {
+    also is CSS::Specification::Base::Grammar;
+    also is CSS::Grammar::CSS3;
 
-    # -- Units -- #
+    token proforma:sym<inherit> {:i inherit}
+    token proforma:sym<initial> {:i initial}
+
+    # base colors - may be extended by css::module::css3::colors
+    rule color:sym<named> {:i [ aqua | black | blue | fuchsia | gray | green | lime | maroon | navy | olive | orange | purple | red | silver | teal | white | yellow ] & <keyw> }
+
+   # -- Units -- #
 
     # add viewport as a new type of length-units
     token length-units:sym<viewport> {:i vw|vh|vmin|vmax}
@@ -49,185 +53,195 @@ grammar CSS::Module::CSS3::Values_and_Units
     rule attr       {:i 'attr(' <qname> [[<.type>|<.unit-name>] && <keyw>]? [ <op(',')> <val($*EXPR, $*USAGE)> ]? ')' }
     rule proforma:sym<toggle> { <toggle> }
     rule proforma:sym<attr>   { <attr> }
-};
 
-use CSS::Grammar::Defs :CSSValue;
+    class Actions {
+        use CSS::Grammar::Actions;
+        use CSS::Specification::Base::Actions;
+        also is CSS::Specification::Base::Actions;
+        also is CSS::Grammar::Actions;
 
-class CSS::Module::CSS3::Values_and_Units::Actions
-    is CSS::Specification::Defs::Actions
-    is CSS::Grammar::Actions {
+        use CSS::Grammar::Defs :CSSValue;
+        role Cast {
+            has $.cast is rw;
+        }
 
-    role Cast {
-        has $.cast is rw;
-    }
-
-    method cast($node is copy, :$cast is copy, :$type) {
-
-        $node = $.token($node, :$type)
-            if $type.defined;
-
-        $node.value does Cast
-            unless $node.value.can('cast');
-
-        # map units to base type. E.g. ms => time
-        with $cast {
-            with CSS::Grammar::Defs::CSSUnits.enums{$_} -> $units-type {
-                $cast = $units-type;
+        method build {
+            use CSS::Grammar::AST;
+            my class builder is CSS::Grammar::AST {
+                method proforma { ['inherit', 'initial'] }
             }
-            $node.value.cast = $cast;
         }
 
-        return $node;
-    }
+        method cast($node is copy, :$cast is copy, :$type) {
 
-    method length-units:sym<viewport>($/) { make $/.lc }
-    method rel-font-units($/)             { make $/.lc }
-    method angle-units($/)                { make $/.lc }
-    method resolution-units($/)           { make $/.lc }
+            $node = $.token($node, :$type)
+                if $type.defined;
 
-    method math($/) {
-        my $cast = $<sum>.ast.value.cast;
-        make $.cast: $.build.func( 'calc', $<sum>.ast, :arg-type<expr>), :$cast;
-    }
+            $node.value does Cast
+                unless $node.value.can('cast');
 
-    method !coerce-types($lhs, $rhs) {
-        return do {
-            when $lhs eq $rhs                          {$lhs}
-            when $lhs eq CSSValue::PercentageComponent {$rhs} 
-            when $rhs eq CSSValue::PercentageComponent {$lhs} 
-            when ($lhs, $rhs) (>=) (CSSValue::IntegerComponent, CSSValue::NumberComponent) {CSSValue::NumberComponent}
- 
-            default {Any}
-        }
-    }
+            # map units to base type. E.g. ms => time
+            with $cast {
+                with CSS::Grammar::Defs::CSSUnits.enums{$_} -> $units-type {
+                    $cast = $units-type;
+                }
+                $node.value.cast = $cast;
+            }
 
-    multi method _cast-operands('+', $lhs, $rhs) {
-        return self!coerce-types($lhs, $rhs);
-    }
-
-    multi method _cast-operands('-', $lhs, $rhs) {
-        return self!coerce-types($lhs, $rhs);
-    }
-
-    multi method _cast-operands('*', $lhs, $rhs) {
-
-        my $Int = CSSValue::IntegerComponent;
-        my $Num = CSSValue::NumberComponent;
-
-        my $l-int = $lhs eq $Int;
-        my $r-int = $rhs eq $Int;
-
-        return do {
-            when $l-int && $r-int {$Int}
-
-            my $l-num = $l-int || $lhs eq $Num;
-            my $r-num = $r-int || $rhs eq $Num;
-
-            when $l-num && $r-num {$Num}
-            when $r-num           {$lhs}
-            when $l-num           {$rhs}
-            default               {Any}
-        }
-    }
-
-    multi method _cast-operands('/', $lhs, $rhs) {
-        die "lhs of '/' has type {$rhs} - expected number or integer"
-            unless $rhs eq CSSValue::NumberComponent | CSSValue::IntegerComponent;
-        return CSSValue::NumberComponent
-            if $lhs eq CSSValue::IntegerComponent;
-        return $lhs;
-    }
-
-    method _cast-chained-expr($expr-ast) {
-        my ($lhs-ast, @rhs) = @$expr-ast;
-        my ($lhs) = $lhs-ast.values;
-        my $cast = $lhs.cast // $lhs.type;
-
-        for @rhs -> $op-ast, $rhs-ast {
-            my ($op) = $op-ast.values;
-            my ($rhs) = $rhs-ast.values;
-
-            my $rhs-type = $rhs.can('cast') && $rhs.cast || $rhs-ast.keys[0];
-
-            $cast = $._cast-operands($op, $cast, $rhs-type);
-            $lhs = $rhs;
-        }
-        return $cast;
-    }
-
-    method sum ($/) {
-        my $expr = $.list($/);
-        my $cast = $._cast-chained-expr($expr);
-        make $.cast( $expr, :type<expr>, :$cast );
-    }
-
-    method product($/) {
-        my $expr = $.list($/);
-        my $cast = $._cast-chained-expr($expr);
-        make $.cast( $expr, :type<expr>, :$cast );
-    }
-
-    method toggle-arg(::?CLASS:D $obj: $/) {
-        make .<expr> given $.build.decl( $/, :$obj );
-    }
-
-    method toggle($/) {
-        return Any if $<expr>>>.ast.grep: {! .defined};
-        my @args = $.list( $/ ).map: {
-            # rule may have consumed arguments, e.g. font-family
-            .<expr>:exists && .<expr>.first({.<op> && .<op> eq ','})
-            ?? .<expr>.grep({!.<op> || .<op> ne ','}).map(-> $expr {[:$expr]})
-            !! $_;
-        }
-        make $.build.func('toggle', @args);
-    }
-
-    method attr(::?CLASS:D $obj: $/) {
-        my @ast = @( quietly $.list($/) );
-        if $<val> {
-            @ast[*-1] = {'expr:fallback' => $.build.decl( $/, :$obj)<expr>};
+            return $node;
         }
 
-        make $.build.func( 'attr', @ast, :arg-type<expr> );
-    }
+        method length-units:sym<viewport>($/) { make $/.lc }
+        method rel-font-units($/)             { make $/.lc }
+        method angle-units($/)                { make $/.lc }
+        method resolution-units($/)           { make $/.lc }
 
-    method proforma:sym<toggle>($/) { make $.node($/) }
-    method proforma:sym<attr>($/)   { make $.node($/) }
-
-    method attr-expr($/) {
-        make $.build.func( 'attr', $.list($/) );
-    }
-
-    method unit($/) {
-        my $item = $/.caps[0].value.ast;
-        $item = $.cast( $item, :cast($item.key) )
-            unless $item.value.can('cast') && $item.value.cast;
-        make $item;
-    }
-
-    method _cast-expr($expr, $base-type) {
-        my $expr-ast = $expr.ast;
-
-        my $expr-type = $expr-ast.value.cast;
-        unless $expr-type.defined {
-            $.warning("incompatible types in expression", ~$expr);
-            return Any;
+        method math($/) {
+            my $cast = $<sum>.ast.value.cast;
+            make $.cast: $.build.func( 'calc', $<sum>.ast, :arg-type<expr>), :$cast;
         }
 
-        my $cast = self!coerce-types($base-type, $expr-type);
-        unless $cast.defined {
-            $.warning("expected an expresssion of type {$base-type}, got: {$expr-type}", ~$expr);
-            return Any;
+        method !coerce-types($lhs, $rhs) {
+            return do {
+                when $lhs eq $rhs                          {$lhs}
+                when $lhs eq CSSValue::PercentageComponent {$rhs} 
+                when $rhs eq CSSValue::PercentageComponent {$lhs} 
+                when ($lhs, $rhs) (>=) (CSSValue::IntegerComponent, CSSValue::NumberComponent) {CSSValue::NumberComponent}
+
+                default {Any}
+            }
         }
 
-        $expr-ast.value.cast = $cast;
-        return $expr-ast;
+        multi method _cast-operands('+', $lhs, $rhs) {
+            return self!coerce-types($lhs, $rhs);
+        }
+
+        multi method _cast-operands('-', $lhs, $rhs) {
+            return self!coerce-types($lhs, $rhs);
+        }
+
+        multi method _cast-operands('*', $lhs, $rhs) {
+
+            my $Int = CSSValue::IntegerComponent;
+            my $Num = CSSValue::NumberComponent;
+
+            my $l-int = $lhs eq $Int;
+            my $r-int = $rhs eq $Int;
+
+            return do {
+                when $l-int && $r-int {$Int}
+
+                my $l-num = $l-int || $lhs eq $Num;
+                my $r-num = $r-int || $rhs eq $Num;
+
+                when $l-num && $r-num {$Num}
+                when $r-num           {$lhs}
+                when $l-num           {$rhs}
+                default               {Any}
+            }
+        }
+
+        multi method _cast-operands('/', $lhs, $rhs) {
+            die "lhs of '/' has type {$rhs} - expected number or integer"
+                unless $rhs eq CSSValue::NumberComponent | CSSValue::IntegerComponent;
+            return CSSValue::NumberComponent
+                if $lhs eq CSSValue::IntegerComponent;
+            return $lhs;
+        }
+
+        method _cast-chained-expr($expr-ast) {
+            my ($lhs-ast, @rhs) = @$expr-ast;
+            my ($lhs) = $lhs-ast.values;
+            my $cast = $lhs.cast // $lhs.type;
+
+            for @rhs -> $op-ast, $rhs-ast {
+                my ($op) = $op-ast.values;
+                my ($rhs) = $rhs-ast.values;
+
+                my $rhs-type = $rhs.can('cast') && $rhs.cast || $rhs-ast.keys[0];
+
+                $cast = $._cast-operands($op, $cast, $rhs-type);
+                $lhs = $rhs;
+            }
+            return $cast;
+        }
+
+        method sum ($/) {
+            my $expr = $.list($/);
+            my $cast = $._cast-chained-expr($expr);
+            make $.cast( $expr, :type<expr>, :$cast );
+        }
+
+        method product($/) {
+            my $expr = $.list($/);
+            my $cast = $._cast-chained-expr($expr);
+            make $.cast( $expr, :type<expr>, :$cast );
+        }
+
+        method toggle-arg(::?CLASS:D $obj: $/) {
+            make .<expr> given $.build.decl( $/, :$obj );
+        }
+
+        method toggle($/) {
+            return Any if $<expr>>>.ast.grep: {! .defined};
+            my @args = $.list( $/ ).map: {
+                # rule may have consumed arguments, e.g. font-family
+                .<expr>:exists && .<expr>.first({.<op> && .<op> eq ','})
+                ?? .<expr>.grep({!.<op> || .<op> ne ','}).map(-> $expr {[:$expr]})
+                !! $_;
+            }
+            make $.build.func('toggle', @args);
+        }
+
+        method attr(::?CLASS:D $obj: $/) {
+            my @ast = @( quietly $.list($/) );
+            if $<val> {
+                @ast[*-1] = {'expr:fallback' => $.build.decl( $/, :$obj)<expr>};
+            }
+
+            make $.build.func( 'attr', @ast, :arg-type<expr> );
+        }
+
+        method proforma:sym<toggle>($/) { make $.node($/) }
+        method proforma:sym<attr>($/)   { make $.node($/) }
+
+        method attr-expr($/) {
+            make $.build.func( 'attr', $.list($/) );
+        }
+
+        method unit($/) {
+            my $item = $/.caps[0].value.ast;
+            $item = $.cast( $item, :cast($item.key) )
+                unless $item.value.can('cast') && $item.value.cast;
+            make $item;
+        }
+
+        method _cast-expr($expr, $base-type) {
+            my $expr-ast = $expr.ast;
+
+            my $expr-type = $expr-ast.value.cast;
+            unless $expr-type.defined {
+                $.warning("incompatible types in expression", ~$expr);
+                return Any;
+            }
+
+            my $cast = self!coerce-types($base-type, $expr-type);
+            unless $cast.defined {
+                $.warning("expected an expresssion of type {$base-type}, got: {$expr-type}", ~$expr);
+                return Any;
+            }
+
+            $expr-ast.value.cast = $cast;
+            return $expr-ast;
+        }
+
+        method length:sym<math>($/)     { make $._cast-expr($<math>, CSSValue::LengthComponent); }
+        method frequency:sym<math>($/)  { make $._cast-expr($<math>, CSSValue::FrequencyComponent); }
+        method angle:sym<math>($/)      { make $._cast-expr($<math>, CSSValue::AngleComponent); }
+        method time:sym<math>($/)       { make $._cast-expr($<math>, CSSValue::TimeComponent); }
+        method resolution:sym<math>($/) { make $._cast-expr($<math>, CSSValue::ResolutionComponent); }
+
     }
+}
 
-    method length:sym<math>($/)     { make $._cast-expr($<math>, CSSValue::LengthComponent); }
-    method frequency:sym<math>($/)  { make $._cast-expr($<math>, CSSValue::FrequencyComponent); }
-    method angle:sym<math>($/)      { make $._cast-expr($<math>, CSSValue::AngleComponent); }
-    method time:sym<math>($/)       { make $._cast-expr($<math>, CSSValue::TimeComponent); }
-    method resolution:sym<math>($/) { make $._cast-expr($<math>, CSSValue::ResolutionComponent); }
 
-};
