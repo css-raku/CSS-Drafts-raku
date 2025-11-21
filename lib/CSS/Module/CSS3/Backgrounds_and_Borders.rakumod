@@ -8,14 +8,14 @@ grammar CSS::Module::CSS3::Backgrounds_and_Borders {
     use CSS::Grammar::CSS3;
     use CSS::Grammar::Actions;
 
-    use CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface;
-    use CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Grammar;
+    use CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface;
+    use CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Grammar;
 
-    also is CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Grammar;
+    also is CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Grammar;
 
     also does CSS::Specification::Base::Grammar;
     also is CSS::Grammar::CSS3;
-    also does CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface;
+    also does CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface;
     rule bg-layer { :i [
          <prop-val-background-image> :my $*A; <!{  $*A++ }>
       || <bg-position> [<op("/")> <bg-size> ] ?  :my $*B; <!{ $*B++ }>
@@ -33,12 +33,12 @@ grammar CSS::Module::CSS3::Backgrounds_and_Borders {
     rule color:sym<named> {:i [ aqua | black | blue | fuchsia | gray | green | lime | maroon | navy | olive | orange | purple | red | silver | teal | white | yellow ] & <keyw> }
 
     our class Actions {
-        use CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions;
+        use CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions;
         use CSS::Specification::Base::Actions;
-        also is CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions;
+        also is CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions;
         also is CSS::Specification::Base::Actions;
         also is CSS::Grammar::Actions;
-        also does CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface;
+        also does CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface;
         method position($/)    { make $.token( $.list($/), :type<expr:position> ) }
         method bg-position($/) { make $<position>.ast } 
 

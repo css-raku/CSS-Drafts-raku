@@ -1,4 +1,4 @@
-unit role CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface;
+unit role CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface;
 method angle (|) {
     ...
 }

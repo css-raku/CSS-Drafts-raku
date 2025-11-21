@@ -5,7 +5,7 @@
     "CSS::Specification",
     "JSON::Fast"
   ],
-  "description": "Perl 6 CSS draft modules",
+  "description": "Raku CSS draft modules",
   "name": "CSS::Drafts",
   "perl": "6c",
   "provides": {
@@ -13,9 +13,9 @@
     "CSS::Drafts::CSS3::Metadata": "lib/CSS/Drafts/CSS3/Metadata.rakumod",
     "CSS::Module::CSS3::Backgrounds_and_Borders": "lib/CSS/Module/CSS3/Backgrounds_and_Borders.rakumod",
     "CSS::Module::CSS3::Backgrounds_and_Borders::Actions": "lib/CSS/Module/CSS3/Backgrounds_and_Borders.rakumod",
-    "CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Spec/Actions.rakumod",
-    "CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Grammar": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Spec/Grammar.rakumod",
-    "CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Interface": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Spec/Interface.rakumod",
+    "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Actions.rakumod",
+    "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Grammar": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Grammar.rakumod",
+    "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Interface.rakumod",
     "CSS::Module::CSS3::Values_and_Units": "lib/CSS/Module/CSS3/Values_and_Units.rakumod"
   },
   "source-url": "git://github.com/p6-css/perl6-CSS-Drafts.git",

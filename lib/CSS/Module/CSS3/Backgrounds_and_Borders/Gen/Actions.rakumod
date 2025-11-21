@@ -1,4 +1,4 @@
-unit class CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Actions;
+unit class CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions;
 method bg-image ($/) {
     make $.build.rule($/)
 }

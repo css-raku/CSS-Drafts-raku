@@ -1,4 +1,4 @@
-unit grammar CSS::Module::CSS3::Backgrounds_and_Borders::Spec::Grammar;
+unit grammar CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Grammar;
 #| <bg-image> = <image> | none
 rule bg-image { :i <image> || none & <keyw>   }
 #| <attachment> = scroll | fixed | local

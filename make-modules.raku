@@ -20,7 +20,7 @@ class Build {
             for (<etc css3x-backgrounds-3-20240311.txt> => <CSS3 Backgrounds_and_Borders>,
                 ) {
                 my ($input-spec, $class-isa) = .kv;
-                my @base-id = flat <CSS Module>, @$class-isa, <Spec>;
+                my @base-id = flat <CSS Module>, @$class-isa, <Gen>;
                 my @grammar-id = @base-id.Slip, 'Grammar';
                 my $scope := 'unit';
                 my CSS::Specification::Compiler $compiler .= new;
