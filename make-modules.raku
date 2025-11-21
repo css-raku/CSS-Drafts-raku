@@ -28,16 +28,16 @@ class Build {
                 my @defs = $compiler.load-defs: :$file;
                 my %child-props = $compiler.child-props;
                 my RakuAST::Package $grammar-ast = $compiler.build-grammar(@grammar-id, :$scope);
-                "lib/{$grammar-ast.&path}.pm".IO.spurt: $grammar-ast.DEPARSE
+                "lib/{$grammar-ast.&path}.rakumod".IO.spurt: $grammar-ast.DEPARSE
                  .subst(/";\n;"/, ';', :g); # work-around for https://github.com/rakudo/rakudo/issues/5991
 
                 my @actions-id = @base-id.Slip, 'Actions';
                 my RakuAST::Package $actions-ast = $compiler.build-actions(@actions-id, :$scope);
-                "lib/{$actions-ast.&path}.pm".IO.spurt: $actions-ast.DEPARSE;
+                "lib/{$actions-ast.&path}.rakumod".IO.spurt: $actions-ast.DEPARSE;
 
                 my @external-id = @base-id.Slip, 'Interface';
                 my RakuAST::Package $external-ast = $compiler.build-external(@external-id, :$scope);
-                "lib/{$external-ast.&path}.pm".IO.spurt: $external-ast.DEPARSE;
+                "lib/{$external-ast.&path}.rakumod".IO.spurt: $external-ast.DEPARSE;
                 my %meta = @defs.&build-metadata(:%child-props);
                 %props ,= %meta;
                 
@@ -78,7 +78,7 @@ sub build-defaults(%meta, :$grammar!, :$actions! is copy, ) {
 
 sub write-metadata(%props) {
     my $class-dir = $*SPEC.catdir(<lib CSS Drafts CSS3>);
-    my $class-path = $*SPEC.catfile( $class-dir, 'Metadata.pm' );
+    my $class-path = $*SPEC.catfile( $class-dir, 'Metadata.rakumod' );
     my $class-name = 'CSS::Drafts::CSS3::Metadata';
     say "Building $class-name";
     {
