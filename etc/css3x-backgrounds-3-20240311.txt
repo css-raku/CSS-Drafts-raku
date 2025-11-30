@@ -1,8 +1,7 @@
 /* https://www.w3.org/TR/2024/CRD-css-backgrounds-3-20240311/ */
-<bg-image> = <image> | none
-/* <bg-layer> = <bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <visual-box> || <'background-color'> */
+<bg-layer> = <'background-image'> || <'background-position'> [ / <'background-size'> ]? || <'background-repeat'> || <'background-attachment'> || <'background-clip'>
+<final-bg-layer> = <'background-image'> || <'background-position'> [ / <'background-size'>{1,2} ]? || <'background-repeat'> || <'background-attachment'> || <'background-clip'> || <'background-color'>
 <attachment> = scroll | fixed | local
-<bg-size> = [ <length-percentage [0,∞]> | auto ]{1,2} | cover | contain
 <line-style> = none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset
 <image> = <url> | <gradient>
 <line-width> = <length [0,∞]> | thin | medium | thick
@@ -31,16 +30,16 @@
 <frequency-percentage> = <frequency> | <percentage>
 <angle-percentage>     = <angle> | <percentage>
 <time-percentage>      = <time> | <percentage>
-background	<bg-layer>#	see individual properties	all elements	no	see individual properties	see individual properties	per grammar	see individual properties	
+background	<bg-layer>#?, <final-bg-layer>	see individual properties	all elements	no	see individual properties	see individual properties	per grammar	see individual properties	
 background-attachment	<attachment>#	scroll	all elements	no	N/A	discrete	per grammar	list, each item the keyword as specified	
 background-clip	<visual-box>#	border-box	all elements	no	N/A	repeatable list	per grammar	list, each item a keyword as specified	
 background-color	<color>	transparent	all elements	no	N/A	by computed value	per grammar	computed color	
-background-image	<bg-image>#	none	all elements	no	N/A	discrete	per grammar	list, each item either an <image> or the keyword none	
+background-image	[<image> | none]#	none	all elements	no	N/A	discrete	per grammar	list, each item either an <image> or the keyword none	
 background-origin	<visual-box>#	padding-box	all elements	no	N/A	repeatable list	per grammar	list, each item a keyword as specified	
-background-position	<bg-position>#	0% 0%	all elements	no	refer to size of background positioning area minus size of background image; see text	repeatable list	per grammar	list, each item a pair of offsets (horizontal and vertical) from the top left origin each given as a computed <length-percentage> value	
+background-position	<position>#	0% 0%	all elements	no	refer to size of background positioning area minus size of background image; see text	repeatable list	per grammar	list, each item a pair of offsets (horizontal and vertical) from the top left origin each given as a computed <length-percentage> value	
 background-repeat	<repeat-style>#	repeat	all elements	no	N/A	discrete	per grammar	list, each item a pair of keywords, one per dimension	
-background-size	<bg-size>#	auto	all elements	no	see text	repeatable list	per grammar	list, each item a pair of sizes (one per axis) each represented as either a keyword or a computed <length-percentage> value	
-border	<line-width> || <line-style> || <color>	See individual properties	all elements except ruby base containers and ruby annotation containers	no	N/A	see individual properties	per grammar	see individual properties	
+background-size	[[ <length-percentage [0,∞]> | auto ]{1,2} | cover | contain]#	auto	all elements	no	see text	repeatable list	per grammar	list, each item a pair of sizes (one per axis) each represented as either a keyword or a computed <length-percentage> value	
+border	<'border-width'> || <'border-style'> || <color>	See individual properties	all elements except ruby base containers and ruby annotation containers	no	N/A	see individual properties	per grammar	see individual properties	
 border-bottom	<line-width> || <line-style> || <color>	See individual properties	all elements except ruby base containers and ruby annotation containers	no	N/A	see individual properties	per grammar	see individual properties	
 border-bottom-color	<color>	currentColor	all elements except ruby base containers and ruby annotation containers	no	N/A	by computed value	per grammar	computed color	border-color
 border-bottom-left-radius	<length-percentage>{1,2}	0	all elements (but see prose)	no	Refer to corresponding dimension of the border box.	by computed value	per grammar	pair of computed <length-percentage> values	border-radius

@@ -1,11 +1,11 @@
 unit class CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions;
-method bg-image ($/) {
+method bg-layer ($/) {
+    make $.build.rule($/)
+}
+method final-bg-layer ($/) {
     make $.build.rule($/)
 }
 method attachment ($/) {
-    make $.build.rule($/)
-}
-method bg-size ($/) {
     make $.build.rule($/)
 }
 method line-style ($/) {
@@ -73,21 +73,6 @@ method angle-percentage ($/) {
 }
 method time-percentage ($/) {
     make $.build.rule($/)
-}
-method prop-val-border-image-outset ($/) {
-    make $.build.list($/)
-}
-method prop-val-border-image-repeat ($/) {
-    make $.build.list($/)
-}
-method prop-val-border-image-slice ($/) {
-    make $.build.list($/)
-}
-method prop-val-border-image-source ($/) {
-    make $.build.list($/)
-}
-method prop-val-border-image-width ($/) {
-    make $.build.list($/)
 }
 method shadow ($/) {
     make $.build.rule($/)

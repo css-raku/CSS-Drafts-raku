@@ -3,7 +3,8 @@
   "depends": [
     "CSS::Module",
     "CSS::Specification",
-    "JSON::Fast"
+    "JSON::Fast",
+    "Method::Also"
   ],
   "description": "Raku CSS draft modules",
   "name": "CSS::Drafts",
