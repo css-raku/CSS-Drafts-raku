@@ -1,5 +1,5 @@
 {
-  "auth": "github:p6-css",
+    "auth": "zef:dwarring",
   "depends": [
     "CSS::Module",
     "CSS::Specification",
@@ -19,6 +19,6 @@
     "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Interface.rakumod",
     "CSS::Module::CSS3::Values_and_Units": "lib/CSS/Module/CSS3/Values_and_Units.rakumod"
   },
-  "source-url": "git://github.com/p6-css/perl6-CSS-Drafts.git",
+  "source-url": "git://github.com/css-raku/CSS-Drafts-raku.git",
   "version": "0.0.1"
 }
