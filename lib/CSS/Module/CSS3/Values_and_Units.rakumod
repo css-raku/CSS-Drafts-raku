@@ -52,34 +52,12 @@ grammar CSS::Module::CSS3::Values_and_Units {
         also does CSS::Module::CSS3::Values_and_Units::Gen::Interface;
 
         use CSS::Grammar::Defs :CSSValue;
-        role Cast {
-            has $.cast is rw;
-        }
 
         method build {
             use CSS::Grammar::AST;
             my class builder is CSS::Grammar::AST {
                 method proforma { ['inherit', 'initial'] }
             }
-        }
-
-        method cast($node is copy, :$cast is copy, :$type) {
-
-            $node = $.token($node, :$type)
-                if $type.defined;
-
-            $node.value does Cast
-                unless $node.value.can('cast');
-
-            # map units to base type. E.g. ms => time
-            with $cast {
-                with CSS::Grammar::Defs::CSSUnits.enums{$_} -> $units-type {
-                    $cast = $units-type;
-                }
-                $node.value.cast = $cast;
-            }
-
-            return $node;
         }
 
         method length-units:sym<viewport>($/) { make $/.lc }
