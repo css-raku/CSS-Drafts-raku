@@ -18,7 +18,6 @@ class Build {
             my %props = $CSS::Module::CSS3::Metadata::property;
 
             for (<src css3x-backgrounds-3-20240311.txt> => <CSS3 Backgrounds_and_Borders>,
-                 <src css-values-3-20240322.txt> => <CSS3 Values_and_Units>,
                 ) {
                 my ($input-spec, $class-isa) = .kv;
                 my @base-id = flat <CSS Module>, @$class-isa, <Gen>;

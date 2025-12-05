@@ -16,11 +16,7 @@
     "CSS::Module::CSS3::Backgrounds_and_Borders::Actions": "lib/CSS/Module/CSS3/Backgrounds_and_Borders.rakumod",
     "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Actions": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Actions.rakumod",
     "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Grammar": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Grammar.rakumod",
-    "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Interface.rakumod",
-      "CSS::Module::CSS3::Values_and_Units": "lib/CSS/Module/CSS3/Values_and_Units.rakumod",
-    "CSS::Module::CSS3::Values_and_Units::Gen::Actions": "lib/CSS/Module/CSS3/Values_and_Units/Gen/Actions.rakumod",
-    "CSS::Module::CSS3::Values_and_Units::Gen::Grammar": "lib/CSS/Module/CSS3/Values_and_Units/Gen/Grammar.rakumod",
-    "CSS::Module::CSS3::Values_and_Units::Gen::Interface": "lib/CSS/Module/CSS3/Values_and_Units/Gen/Interface.rakumod"
+    "CSS::Module::CSS3::Backgrounds_and_Borders::Gen::Interface": "lib/CSS/Module/CSS3/Backgrounds_and_Borders/Gen/Interface.rakumod"
   },
   "source-url": "git://github.com/css-raku/CSS-Drafts-raku.git",
   "version": "0.0.1"
